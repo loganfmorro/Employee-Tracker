@@ -215,12 +215,6 @@ function removeDepartment() {
     });
 }
 
-function departmentBudget() {
-    //this is where the user can see the list of departments, be prompted to show the budget for a specific id, and then calculate/show the utilized budget
-    console.log("departmentBudget()");
-    departmentMenu();
-}
-
 //Here is where we can manage our roles functions
 
 function viewRoles() {
@@ -319,7 +313,7 @@ function removeRole() {
 function viewEmployees() {
     connection.query("SELECT employee.id AS ID, first_name AS First, last_name AS Last, manager_id AS Manager_ID, title AS Title, salary AS Salary, name AS Department FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id;", function (err, results) {
         if (err) throw err;
-        console.table('Employees', results)
+        console.table('employees', results)
         employeeMenu();
     })
 }

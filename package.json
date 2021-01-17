@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/loganfmorro/Employee-Tracker/issues"
   },
-  "homepage": "https://github.com/loganfmorro/Employee-Tracker#readme"
+  "homepage": "https://github.com/loganfmorro/Employee-Tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "dotenv": "^8.2.0",
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
+    "stack": "^0.1.0"
+  }
 }
