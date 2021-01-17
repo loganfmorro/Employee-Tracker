@@ -1,0 +1,19 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "Command line application that uses node, inquirer, and mySQL to manage a company's employee data",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loganfmorro/Employee-Tracker.git"
+  },
+  "author": "Logan Morro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loganfmorro/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/loganfmorro/Employee-Tracker#readme"
+}
