@@ -176,3 +176,139 @@ function viewDepartments () {
         })
     }).catch(err => console.log(err));
 }
+
+function deleteDepartment() {
+    // this will let the user select a specific id from a list of departments to delete
+    connection.query('SELECT * FROM department;', function (err, results) {
+        if (err) throw err;
+
+        inquirer.prompt(
+            {
+                name: 'department',
+                type: 'list',
+                choices: function() {
+                    let choiceArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        choiceArray.push(results[i].id + ' ' + results[i].name);
+                    }
+                    return choiceArray;
+                },
+                message: 'Which department would you like to remove?'
+            }
+        )
+        .then(function(response) {
+            //this will remove the id of the department the user has selected
+            let department;
+            for (let i = 0; i < results.length; i++) {
+                if ((results[i].id + ' ' + results.name) === response.department) {
+                    department = results[i];
+                }
+            }
+
+            connection.query(
+                'DELETE FROM department WHERE ?;', {id: department.id}, (err) => {
+                    if (err) throw err;
+                    console.log('Department removed');
+                    departmentMenu();
+                })
+        }).catch(err => console.log(err));
+    });
+}
+
+function departmentBudget() {
+    //this is where the user can see the list of departments, be prompted to show the budget for a specific id, and then calculate/show the utilized budget
+    console.log("departmentBudget()");
+    departmentMenu();
+}
+
+//Here is where we can manage our roles functions
+
+function viewRoles() {
+    connection.query("SELECT role.id AS ID, title AS Title, salary AS Salary, name AS Department FROM role INNER JOIN department ON role.department_id = department.id;", function(err, results) {
+        if (err) throw err;
+        console.table('Roles', results)
+        rolesMenu();
+    })
+}
+
+function addRole() {
+    //Prompt the user for the role info, then add the role to the database
+    connection.query('SELECt * FROM department;', function(err, results) {
+        if (err) throw err;
+
+        inquirer.prompt ([
+            {
+                name: 'title',
+                type: 'input',
+                message: 'What is the title for the role you are adding?'
+            },
+            {
+                name: 'salary',
+                type: 'input',
+                message: 'What is the salary for the role you are adding?'
+            },
+            {
+                name: 'department',
+                type: 'list',
+                choices: function() {
+                    let choiceArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        choiceArray.push(results[i].name);
+                    }
+                    return choiceArray;
+                },
+                message: 'What department would you like to create this role in?'
+            }
+        ])
+        .then(function(response) {
+            let department_id;
+            for (let i = 0; i < results.length; i++) {
+                if (results[i],name === response.department) {
+                    department_id = results[i].id;
+                }
+            }
+
+            connection.query('INSERT INTO role (title, salary, department_id) VALUES (?,?,?);', [response.title, response.salary, department_id], (err) => {
+                if(err) throw err;
+                console.log ("New role added (" + response.title + ")");
+                rolesMenu();
+            })
+        }).catch(err => console.log(err));    
+    });
+}
+
+function deleteRole() {
+    //Here we show the user the list of roles, and prompt them to choose which role to delete from the database based on the id
+    connection.query('SELECT * FROM role;', function (err, results) {
+        if (err) throw err;
+
+        inquirer.prompt(
+            {
+                name: 'role',
+                type: 'list',
+                choices: function() {
+                    let choiceArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        choiceArray.push(results[i].id + ' ' + results[i].title);
+                    }
+                    return choiceArray;
+                },
+                message: 'Which role would you like to remove?'
+            }
+        )
+        .then(function (response) {
+            let role;
+            for (let i = 0; i < results.length; i++) {
+                if ((results[i].id + ' ' + results[i].title) === response.role) {
+                    role = results[i];
+                }
+            }
+
+            connection.query(
+                'DELETE FROM role WHERE ?;', {id: role.id}, (err) => {
+                    if (err) throw err;
+                    console.log ('Role deleted');
+                    rolesMenu();
+            })
+        }).catch(err => console.log(err));
+    });}
