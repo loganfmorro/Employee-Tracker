@@ -159,3 +159,20 @@ function departmentMenu() {
     }).catch(err => console.log(err));
 }
 
+// Here we can manage the department functions
+
+function viewDepartments () {
+    //this will show the department data table
+    inquirer.prompt({
+        type: 'input',
+        name: 'department',
+        message: 'What is the title of the department you would like to add?'
+    })
+    .then(function(response) {
+        connection.query('INSERT INTO department (name) VALUES (?);', [response.department], (err) => {
+            if (err) throw err;
+            console.log("New department added (" + response.department + ")");
+            departmentMenu();
+        })
+    }).catch(err => console.log(err));
+}
