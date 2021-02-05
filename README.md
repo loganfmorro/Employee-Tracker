@@ -39,7 +39,7 @@ You can use the provided schema.sql to build the database, and seed.sql to add d
 To start this command line application, navigate to the employee-tracker directory in the terminal, run an npm install, and run the command 'node app.js'.
 
 ## Screen Recording
-![Demo Screen Recording]()
+![Demo Screen Recording](https://drive.google.com/file/d/1ssn2V5-VepmT468vk8jxQQ_rcDrpA3hS/view?usp=sharing)
 
 ## Licenses
 ### MIT License
