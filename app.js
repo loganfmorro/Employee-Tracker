@@ -4,16 +4,16 @@ const cTable = require('console.table');
 require('dotenv').config();
 
 const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: "employeeTracker_DB"
+    host: "localhost",
+        user: "root",
+        password: process.env.DB_PASS,
+        database: "employees",
+        port: 3306
 });
 
 connection.connect(function(err) {
     if (err) throw err;
-    console.log('#######                                                 \n#       #    # #####  #       ####  #   # ###### ###### \n#       ##  ## #    # #      #    #  # #  #      #      \n#####   # ## # #    # #      #    #   #   #####  #####  \n#       #    # #####  #      #    #   #   #      #      \n#       #    # #      #      #    #   #   #      #      \n####### #    # #      ######  ####    #   ###### ###### \n                                                        \n######                                                  \n#     #   ##   #####   ##                               \n#     #  #  #    #    #  #                              \n#     # #    #   #   #    #                             \n#     # ######   #   ######                             \n#     # #    #   #   #    #                             \n######  #    #   #   #    #                             \n                                                        \n#######                                                 \n   #    #####    ##    ####  #    # ###### #####        \n   #    #    #  #  #  #    # #   #  #      #    #       \n   #    #    # #    # #      ####   #####  #    #       \n   #    #####  ###### #      #  #   #      #####        \n   #    #   #  #    # #    # #   #  #      #   #        \n   #    #    # #    #  ####  #    # ###### #    #       ');
+    console.log('WELCOME TO THE EMPLOYEE TRACKER');
     mainMenu();
 });
 
@@ -23,22 +23,22 @@ function mainMenu(){
         type: "list",
         message: "Main Menu\n What would you like to do?",
         choices: [
-            "Manage Employees",
-            "Manage Roles",
             "Manage Departments",
+            "Manage Roles",
+            "Manage Employees",
             "EXIT"
         ]})
     
     .then((response) => {
         switch (response.choice) {
-            case "Manage Employees":
-                employeeMenu();
+            case "Manage Departments":
+                departmentMenu();
                 break;
             case "Manage Roles":
                 rolesMenu();
                 break;
-            case "Manage Departments":
-                departmentMenu();
+            case "Manage Employees":
+                employeeMenu();
                 break;
             case "EXIT":
                 connection.end();
@@ -162,11 +162,20 @@ function departmentMenu() {
 // Here we can manage the department functions
 
 function viewDepartments () {
-    //this will show the department data table
+     // Print department table
+     connection.query("SELECT id AS ID, name AS Department FROM department;", function(err, results) {
+        if (err) throw err;
+        console.table('Departments', results)
+        departmentMenu();
+    })
+}
+
+function addDepartment() {
+    // Prompt info, then add department to database
     inquirer.prompt({
         type: 'input',
         name: 'department',
-        message: 'What is the title of the department you would like to add?'
+        message: 'What is the name of the department you\'d like to add?'
     })
     .then(function(response) {
         connection.query('INSERT INTO department (name) VALUES (?);', [response.department], (err) => {
@@ -227,7 +236,7 @@ function viewRoles() {
 
 function addRole() {
     //Prompt the user for the role info, then add the role to the database
-    connection.query('SELECt * FROM department;', function(err, results) {
+    connection.query('SELECT * FROM department;', function(err, results) {
         if (err) throw err;
 
         inquirer.prompt ([
@@ -257,7 +266,7 @@ function addRole() {
         .then(function(response) {
             let department_id;
             for (let i = 0; i < results.length; i++) {
-                if (results[i],name === response.department) {
+                if (results[i].name === response.department) {
                     department_id = results[i].id;
                 }
             }
@@ -313,7 +322,7 @@ function removeRole() {
 function viewEmployees() {
     connection.query("SELECT employee.id AS ID, first_name AS First, last_name AS Last, manager_id AS Manager_ID, title AS Title, salary AS Salary, name AS Department FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id;", function (err, results) {
         if (err) throw err;
-        console.table('employees', results)
+        console.table('Employees', results)
         employeeMenu();
     })
 }
@@ -336,7 +345,7 @@ function addEmployee() {
             {
                 name: 'role',
                 type: 'list',
-                choice: function () {
+                choices: function () {
                     let choiceArray = [];
                     for (let i = 0; i < results.length; i++) {
                         choiceArray.push(results[i].title);
@@ -531,7 +540,7 @@ function removeEmployee() {
                 'DELETE FROM employee WHERE ?;', {id: employee.id}, (err) => {
                 if (err) throw err;
                 console.log('Employee deleted');
-                employeesMenu();
+                employeeMenu();
             })    
         }).catch(err => console.log(err));
     });
